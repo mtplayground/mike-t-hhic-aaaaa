@@ -165,7 +165,7 @@ function handleSign(state: CalculatorState): CalculatorState {
 
 function handleBackspace(state: CalculatorState): CalculatorState {
   if (state.error) {
-    return INITIAL_CALCULATOR_STATE
+    return resetCalculatorSessionState(state)
   }
 
   if (state.waitingForOperand) {

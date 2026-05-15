@@ -23,6 +23,14 @@ function getEntrySizingClass(currentEntry: string): string {
   return 'text-5xl sm:text-6xl'
 }
 
+function getOverflowMessage(currentEntry: string): string | null {
+  if (currentEntry.length <= 16) {
+    return null
+  }
+
+  return 'Long value detected. Scroll horizontally to review all digits.'
+}
+
 export function Display({
   currentEntry,
   pendingExpression,
@@ -32,8 +40,12 @@ export function Display({
   const expression = formatExpression(pendingExpression)
   const expressionLabel =
     expression || (pendingOperator ? pendingOperator : 'No pending expression')
-  const entryLabel = error ? `Error: ${error}` : currentEntry
+  const entryLabel = error ? 'Calculator error' : currentEntry
   const entrySizingClass = getEntrySizingClass(currentEntry)
+  const overflowMessage = getOverflowMessage(currentEntry)
+  const helperMessage = error
+    ? `${error} Press a digit or decimal to start over, or clear the calculator.`
+    : overflowMessage
 
   return (
     <section
@@ -42,12 +54,12 @@ export function Display({
     >
       <div className="mb-4 flex items-start justify-between gap-4">
         <div>
-          <p
+          <h2
             id="display-heading"
             className="font-mono text-sm font-bold tracking-[0.22em] text-[var(--accent)] uppercase"
           >
             Calculator display
-          </p>
+          </h2>
           <p className="mt-2 text-sm text-[var(--muted)]">
             Current entry and in-progress expression preview
           </p>
@@ -63,20 +75,33 @@ export function Display({
 
       <div
         className="overflow-x-auto rounded-[1.5rem] border border-[color:var(--border)] bg-[color:var(--display-bg)] px-4 py-5 text-right shadow-inner sm:px-6"
-        aria-live="polite"
+        aria-live={error ? 'assertive' : 'polite'}
         aria-atomic="true"
+        role={error ? 'alert' : 'status'}
       >
         <p className="mb-3 text-xs tracking-[0.18em] text-[var(--muted)] uppercase">
-          Current entry
+          {error ? 'Current error' : 'Current entry'}
         </p>
         <p
           className={`min-w-max font-mono leading-none font-semibold tracking-[-0.04em] text-[var(--text-strong)] ${entrySizingClass}`}
           aria-label="Current value"
           title={entryLabel}
         >
-          {entryLabel}
+          {error ? error : currentEntry}
         </p>
       </div>
+
+      {helperMessage ? (
+        <p
+          className={`mt-4 rounded-[1rem] border px-4 py-3 text-sm ${
+            error
+              ? 'border-[var(--accent)] bg-[color:var(--code-bg)] text-[var(--text-strong)]'
+              : 'border-[color:var(--border)] bg-[color:var(--display-bg)] text-[var(--muted)]'
+          }`}
+        >
+          {helperMessage}
+        </p>
+      ) : null}
     </section>
   )
 }

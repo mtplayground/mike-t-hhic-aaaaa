@@ -38,13 +38,13 @@ function App() {
         <section className="rounded-[2.25rem] border border-[color:var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
           <div className="mb-5 border-b border-[color:var(--border)] pb-5">
             <p className="mb-3 font-mono text-sm font-bold tracking-[0.22em] text-[var(--accent)] uppercase">
-              Issue 12 of 15
+              Issue 14 of 15
             </p>
             <h1 className="max-w-2xl">{appTitle}</h1>
             <p className="max-w-2xl text-base/7 text-[var(--muted)] sm:text-lg/8">
-              The live calculator shell now includes a session history panel, so
-              completed expressions can be reviewed and recalled into the
-              display without leaving the main layout.
+              The calculator shell now reinforces accessible labeling, clearer
+              error recovery guidance, and overflow messaging while keeping the
+              existing reducer-driven interactions intact.
             </p>
           </div>
 
@@ -80,6 +80,11 @@ function App() {
             <li>
               Successful evaluations are now recorded in an in-memory session
               history for later recall.
+            </li>
+            <li>
+              Error states are announced more explicitly, and long values now
+              expose a visible overflow hint instead of silently truncating the
+              context.
             </li>
           </ul>
 
