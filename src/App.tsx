@@ -2,120 +2,92 @@ import { useReducer } from 'react'
 
 import Display from './components/Display'
 import Keypad from './components/Keypad'
-import { evaluateExpression, resolvePercentageValue } from './engine/evaluate'
 import { calculatorReducer } from './engine/reducer'
-import {
-  CALCULATOR_ACTION_TYPES,
-  INITIAL_CALCULATOR_STATE,
-  OPERATOR_LABELS,
-} from './engine/types'
+import { INITIAL_CALCULATOR_STATE } from './engine/types'
 
 function App() {
   const appTitle = import.meta.env.VITE_APP_TITLE ?? 'Mike T HHIC AAAAA'
-  const operatorNames = Object.values(OPERATOR_LABELS).join(', ')
   const [engineState, dispatch] = useReducer(
     calculatorReducer,
     INITIAL_CALCULATOR_STATE
   )
-  const precedenceExample = evaluateExpression([
-    { kind: 'value', value: '2' },
-    { kind: 'operator', value: '+' },
-    { kind: 'value', value: '3' },
-    { kind: 'operator', value: '*' },
-    { kind: 'value', value: '4' },
-  ])
-  const percentageExample = resolvePercentageValue('10', {
-    leftValue: '200',
-    operator: '+',
-  })
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
-      <section className="rounded-[2rem] border border-[color:var(--border)] bg-[var(--surface)] p-8 shadow-[var(--shadow)] backdrop-blur">
-        <p className="mb-3 font-mono text-sm font-bold tracking-[0.22em] text-[var(--accent)] uppercase">
-          Issue 8 of 15
-        </p>
-        <h1>{appTitle}</h1>
-        <p className="max-w-3xl text-base/7 text-[var(--muted)] sm:text-lg/8">
-          This repository now runs on Vite, React, TypeScript, Tailwind, and a
-          ready-to-use test harness. This step adds the keypad that dispatches
-          calculator actions through the existing reducer model.
-        </p>
-      </section>
+    <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-6 sm:py-10 lg:justify-center">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_22rem] lg:items-stretch">
+        <section className="rounded-[2.25rem] border border-[color:var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
+          <div className="mb-5 border-b border-[color:var(--border)] pb-5">
+            <p className="mb-3 font-mono text-sm font-bold tracking-[0.22em] text-[var(--accent)] uppercase">
+              Issue 9 of 15
+            </p>
+            <h1 className="max-w-2xl">{appTitle}</h1>
+            <p className="max-w-2xl text-base/7 text-[var(--muted)] sm:text-lg/8">
+              A responsive calculator shell assembled around the live engine
+              reducer. The display and keypad now form the primary mobile-first
+              interface.
+            </p>
+          </div>
 
-      <Display
-        currentEntry={engineState.currentEntry}
-        pendingExpression={engineState.pendingExpression}
-        pendingOperator={engineState.pendingOperator}
-        error={engineState.error}
-      />
+          <div className="grid gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(19rem,0.9fr)] xl:items-start">
+            <Display
+              currentEntry={engineState.currentEntry}
+              pendingExpression={engineState.pendingExpression}
+              pendingOperator={engineState.pendingOperator}
+              error={engineState.error}
+            />
+            <Keypad dispatch={dispatch} />
+          </div>
+        </section>
 
-      <Keypad dispatch={dispatch} />
+        <aside className="rounded-[2.25rem] border border-[color:var(--border)] bg-[var(--surface)] p-6 shadow-[var(--shadow)] backdrop-blur sm:p-8">
+          <h2>App shell notes</h2>
+          <ul className="mt-4 grid gap-3 pl-5 text-[var(--muted)] marker:text-[var(--accent)]">
+            <li>
+              Single-column stacking on mobile keeps the calculator readable.
+            </li>
+            <li>
+              The layout shifts into a two-panel shell on larger screens for a
+              more intentional desktop presentation.
+            </li>
+            <li>
+              Display and keypad share the same reducer state, so button presses
+              update the visible output immediately.
+            </li>
+          </ul>
 
-      <section
-        className="rounded-[2rem] border border-[color:var(--border)] bg-[var(--surface)] p-8 shadow-[var(--shadow)] backdrop-blur"
-        aria-labelledby="engine-heading"
-      >
-        <h2 id="engine-heading">Engine preview</h2>
-        <ul className="mt-4 grid gap-3 pl-5 text-[var(--muted)] marker:text-[var(--accent)]">
-          <li>
-            Initial reducer entry stays at{' '}
-            <code>{engineState.currentEntry}</code>
-          </li>
-          <li>Pending operator starts unset and supports {operatorNames}</li>
-          <li>
-            {CALCULATOR_ACTION_TYPES.length} typed engine actions are modeled
-            and now reduce into concrete state transitions
-          </li>
-          <li>Keypad buttons now dispatch those actions directly</li>
-          <li>
-            Operator precedence example:{' '}
-            <code>
-              {precedenceExample.ok ? precedenceExample.value : 'error'}
-            </code>
-          </li>
-          <li>
-            Additive percentage example:{' '}
-            <code>
-              {percentageExample.ok ? percentageExample.value : 'error'}
-            </code>
-          </li>
-        </ul>
-      </section>
-
-      <section
-        className="rounded-[2rem] border border-[color:var(--border)] bg-[var(--surface)] p-8 shadow-[var(--shadow)] backdrop-blur"
-        aria-labelledby="tooling-heading"
-      >
-        <h2 id="tooling-heading">Current tooling</h2>
-        <ul className="mt-4 grid gap-3 pl-5 text-[var(--muted)] marker:text-[var(--accent)]">
-          <li>Vite for local development and production builds</li>
-          <li>React 19 with a TypeScript entrypoint</li>
-          <li>
-            Tailwind CSS for utility-first styling and shared design tokens
-          </li>
-          <li>ESLint and Prettier base configs for consistent code quality</li>
-          <li>Vitest and React Testing Library for fast component tests</li>
-          <li>Playwright configured for end-to-end browser coverage</li>
-          <li>
-            Dev server bound to <code>0.0.0.0:8080</code>
-          </li>
-        </ul>
-      </section>
-
-      <section
-        className="rounded-[2rem] border border-[color:var(--border)] bg-[var(--surface)] p-8 shadow-[var(--shadow)] backdrop-blur"
-        aria-labelledby="next-heading"
-      >
-        <h2 id="next-heading">Next implementation milestones</h2>
-        <ol className="mt-4 grid list-decimal gap-3 pl-5 text-[var(--muted)] marker:text-[var(--accent)]">
-          <li>Connect percent and equals actions to reducer transitions</li>
-          <li>Refine the app shell into a calculator-first layout</li>
-          <li>
-            Expose reducer state through interactive history-aware components
-          </li>
-        </ol>
-      </section>
+          <div className="mt-6 rounded-[1.5rem] border border-[color:var(--border)] bg-[color:var(--display-bg)] p-5">
+            <p className="font-mono text-xs font-bold tracking-[0.2em] text-[var(--accent)] uppercase">
+              Live state
+            </p>
+            <dl className="mt-4 grid gap-4 text-sm text-[var(--muted)]">
+              <div>
+                <dt className="font-semibold text-[var(--text-strong)]">
+                  Current entry
+                </dt>
+                <dd className="mt-1 font-mono">{engineState.currentEntry}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-[var(--text-strong)]">
+                  Pending operator
+                </dt>
+                <dd className="mt-1 font-mono">
+                  {engineState.pendingOperator ?? 'None'}
+                </dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-[var(--text-strong)]">
+                  Entry mode
+                </dt>
+                <dd className="mt-1">
+                  {engineState.waitingForOperand
+                    ? 'Waiting for next operand'
+                    : 'Editing current operand'}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </aside>
+      </div>
     </main>
   )
 }
