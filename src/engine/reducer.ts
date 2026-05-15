@@ -1,6 +1,7 @@
 import { evaluateExpression, type EvaluationFailure } from './evaluate'
 import {
   INITIAL_CALCULATOR_STATE,
+  type HistoryEntry,
   type CalculatorAction,
   type CalculatorOperator,
   type CalculatorState,
@@ -32,6 +33,14 @@ function clearError(state: CalculatorState): CalculatorState {
   }
 }
 
+function resetCalculatorSessionState(state: CalculatorState): CalculatorState {
+  return {
+    ...INITIAL_CALCULATOR_STATE,
+    history: state.history,
+    nextHistoryId: state.nextHistoryId,
+  }
+}
+
 function commitCurrentEntry(state: CalculatorState): ExpressionToken[] {
   const nextValue = valueToken(state.currentEntry)
   const lastToken = state.pendingExpression.at(-1)
@@ -58,6 +67,22 @@ function replaceTrailingOperator(
   return [...expression, operatorToken(operator)]
 }
 
+function formatExpression(tokens: ExpressionToken[]): string {
+  return tokens.map((token) => token.value).join(' ')
+}
+
+function buildHistoryEntry(
+  state: CalculatorState,
+  expression: ExpressionToken[],
+  result: string
+): HistoryEntry {
+  return {
+    id: state.nextHistoryId,
+    expression: formatExpression(expression),
+    result,
+  }
+}
+
 function applyEvaluationFailure(
   state: CalculatorState,
   failure: EvaluationFailure
@@ -70,7 +95,9 @@ function applyEvaluationFailure(
 }
 
 function handleDigit(state: CalculatorState, digit: string): CalculatorState {
-  const baseState = state.error ? INITIAL_CALCULATOR_STATE : clearError(state)
+  const baseState = state.error
+    ? resetCalculatorSessionState(state)
+    : clearError(state)
 
   if (baseState.waitingForOperand) {
     return {
@@ -101,7 +128,9 @@ function handleDigit(state: CalculatorState, digit: string): CalculatorState {
 }
 
 function handleDecimal(state: CalculatorState): CalculatorState {
-  const baseState = state.error ? INITIAL_CALCULATOR_STATE : clearError(state)
+  const baseState = state.error
+    ? resetCalculatorSessionState(state)
+    : clearError(state)
 
   if (baseState.waitingForOperand) {
     return {
@@ -209,12 +238,16 @@ function handleEquals(state: CalculatorState): CalculatorState {
     return applyEvaluationFailure(state, evaluation)
   }
 
+  const historyEntry = buildHistoryEntry(state, expression, evaluation.value)
+
   return {
     currentEntry: evaluation.value,
     pendingExpression: [],
     pendingOperator: null,
     waitingForOperand: true,
     error: null,
+    history: [...state.history, historyEntry],
+    nextHistoryId: state.nextHistoryId + 1,
   }
 }
 
@@ -232,7 +265,7 @@ export function calculatorReducer(
     case 'sign':
       return handleSign(state)
     case 'clear':
-      return INITIAL_CALCULATOR_STATE
+      return resetCalculatorSessionState(state)
     case 'backspace':
       return handleBackspace(state)
     case 'equals':

@@ -76,6 +76,10 @@ function App() {
               Keyboard input mirrors the on-screen controls for digits,
               operators, Enter, Escape, Backspace, and decimal entry.
             </li>
+            <li>
+              Successful evaluations are now recorded in an in-memory session
+              history for later recall.
+            </li>
           </ul>
 
           <div className="mt-6 rounded-[1.5rem] border border-[color:var(--border)] bg-[color:var(--display-bg)] p-5">
@@ -106,6 +110,12 @@ function App() {
                     ? 'Waiting for next operand'
                     : 'Editing current operand'}
                 </dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-[var(--text-strong)]">
+                  History entries
+                </dt>
+                <dd className="mt-1 font-mono">{engineState.history.length}</dd>
               </div>
             </dl>
           </div>

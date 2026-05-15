@@ -4,6 +4,10 @@ import userEvent from '@testing-library/user-event'
 import App from './App'
 
 describe('App', () => {
+  function getDefinitionValue(term: string) {
+    return screen.getByText(term).nextElementSibling
+  }
+
   it('renders the configured application title', () => {
     render(<App />)
 
@@ -29,10 +33,17 @@ describe('App', () => {
         'Keyboard input mirrors the on-screen controls for digits, operators, Enter, Escape, Backspace, and decimal entry.'
       )
     ).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'Successful evaluations are now recorded in an in-memory session history for later recall.'
+      )
+    ).toBeInTheDocument()
     expect(screen.getByLabelText('Pending expression')).toHaveTextContent(
       'No pending expression'
     )
     expect(screen.getByLabelText('Current value')).toHaveTextContent('0')
+    expect(screen.getByText('History entries')).toBeInTheDocument()
+    expect(getDefinitionValue('History entries')).toHaveTextContent('0')
   })
 
   it('updates the display when keypad actions are pressed', async () => {
@@ -50,6 +61,12 @@ describe('App', () => {
     )
     expect(screen.getByLabelText('Current value')).toHaveTextContent('3')
     expect(screen.getByText('Editing current operand')).toBeInTheDocument()
+
+    await user.click(
+      screen.getByRole('button', { name: 'Evaluate expression' })
+    )
+    expect(screen.getByLabelText('Current value')).toHaveTextContent('15')
+    expect(getDefinitionValue('History entries')).toHaveTextContent('1')
   })
 
   it('updates the display when keyboard actions are pressed', async () => {

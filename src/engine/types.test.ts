@@ -15,6 +15,8 @@ describe('calculator engine types', () => {
       pendingOperator: null,
       waitingForOperand: false,
       error: null,
+      history: [],
+      nextHistoryId: 1,
     })
   })
 

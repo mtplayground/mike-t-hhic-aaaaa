@@ -39,12 +39,20 @@ export type ExpressionToken =
       value: CalculatorOperator
     }
 
+export interface HistoryEntry {
+  id: number
+  expression: string
+  result: string
+}
+
 export interface CalculatorState {
   currentEntry: string
   pendingExpression: ExpressionToken[]
   pendingOperator: CalculatorOperator | null
   waitingForOperand: boolean
   error: string | null
+  history: HistoryEntry[]
+  nextHistoryId: number
 }
 
 export type DigitAction = {
@@ -99,6 +107,8 @@ export const INITIAL_CALCULATOR_STATE: CalculatorState = {
   pendingOperator: null,
   waitingForOperand: false,
   error: null,
+  history: [],
+  nextHistoryId: 1,
 }
 
 export function isDigitCharacter(value: string): value is DigitCharacter {
