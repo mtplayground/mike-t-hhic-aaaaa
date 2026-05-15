@@ -16,6 +16,7 @@
     --surface: rgb(255 255 255 / 0.88);
     --border: rgb(62 52 69 / 0.12);
     --code-bg: rgb(54 38 69 / 0.08);
+    --display-bg: rgb(255 248 241 / 0.92);
     --accent: #a44b21;
     --shadow:
       rgb(66 43 20 / 0.08) 0 18px 40px -20px,
