@@ -1,13 +1,17 @@
+import { useReducer } from 'react'
+
+import { evaluateExpression, resolvePercentageValue } from './engine/evaluate'
+import { calculatorReducer, reduceCalculatorActions } from './engine/reducer'
 import {
   CALCULATOR_ACTION_TYPES,
   INITIAL_CALCULATOR_STATE,
   OPERATOR_LABELS,
 } from './engine/types'
-import { evaluateExpression, resolvePercentageValue } from './engine/evaluate'
 
 function App() {
   const appTitle = import.meta.env.VITE_APP_TITLE ?? 'Mike T HHIC AAAAA'
   const operatorNames = Object.values(OPERATOR_LABELS).join(', ')
+  const [engineState] = useReducer(calculatorReducer, INITIAL_CALCULATOR_STATE)
   const precedenceExample = evaluateExpression([
     { kind: 'value', value: '2' },
     { kind: 'operator', value: '+' },
@@ -19,37 +23,44 @@ function App() {
     leftValue: '200',
     operator: '+',
   })
+  const reducerPreview = reduceCalculatorActions([
+    { type: 'digit', digit: '1' },
+    { type: 'digit', digit: '2' },
+    { type: 'operator', operator: '+' },
+    { type: 'digit', digit: '3' },
+    { type: 'equals' },
+  ])
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
       <section className="rounded-[2rem] border border-[color:var(--border)] bg-[var(--surface)] p-8 shadow-[var(--shadow)] backdrop-blur">
         <p className="mb-3 font-mono text-sm font-bold tracking-[0.22em] text-[var(--accent)] uppercase">
-          Issue 4 of 15
+          Issue 6 of 15
         </p>
         <h1>{appTitle}</h1>
         <p className="max-w-3xl text-base/7 text-[var(--muted)] sm:text-lg/8">
           This repository now runs on Vite, React, TypeScript, Tailwind, and a
-          ready-to-use test harness. This step adds the calculator engine state
-          model and typed action catalog that later reducer and UI work will
-          build on top of.
+          ready-to-use test harness. This step adds the reducer that applies
+          calculator engine actions across arithmetic, editing, and error
+          handling flows.
         </p>
       </section>
 
       <section
         className="rounded-[2rem] border border-[color:var(--border)] bg-[var(--surface)] p-8 shadow-[var(--shadow)] backdrop-blur"
-        aria-labelledby="engine-heading"
+        aria-labelledby="reducer-heading"
       >
-        <h2 id="engine-heading">Engine model foundation</h2>
+        <h2 id="reducer-heading">Reducer foundation</h2>
         <ul className="mt-4 grid gap-3 pl-5 text-[var(--muted)] marker:text-[var(--accent)]">
           <li>
-            Current entry defaults to{' '}
-            <code>{INITIAL_CALCULATOR_STATE.currentEntry}</code>
+            Initial reducer entry stays at{' '}
+            <code>{engineState.currentEntry}</code>
           </li>
-          <li>Pending expression starts empty until input is chained</li>
+          <li>Pending expression captures chained operands and operators</li>
           <li>Pending operator starts unset and supports {operatorNames}</li>
           <li>
             {CALCULATOR_ACTION_TYPES.length} typed engine actions are modeled
-            for input, editing, and evaluation flow
+            and now reduce into concrete state transitions
           </li>
           <li>
             Operator precedence example:{' '}
@@ -62,6 +73,9 @@ function App() {
             <code>
               {percentageExample.ok ? percentageExample.value : 'error'}
             </code>
+          </li>
+          <li>
+            Reducer sequence preview: <code>{reducerPreview.currentEntry}</code>
           </li>
         </ul>
       </section>
@@ -92,9 +106,9 @@ function App() {
       >
         <h2 id="next-heading">Next implementation milestones</h2>
         <ol className="mt-4 grid list-decimal gap-3 pl-5 text-[var(--muted)] marker:text-[var(--accent)]">
-          <li>Build the reducer around these engine actions</li>
           <li>Connect percent and equals actions to reducer transitions</li>
           <li>Wire the display and keypad into the app shell</li>
+          <li>Expose reducer state through dedicated calculator components</li>
         </ol>
       </section>
     </main>
