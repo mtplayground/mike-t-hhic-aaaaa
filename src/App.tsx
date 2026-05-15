@@ -3,10 +3,22 @@ import {
   INITIAL_CALCULATOR_STATE,
   OPERATOR_LABELS,
 } from './engine/types'
+import { evaluateExpression, resolvePercentageValue } from './engine/evaluate'
 
 function App() {
   const appTitle = import.meta.env.VITE_APP_TITLE ?? 'Mike T HHIC AAAAA'
   const operatorNames = Object.values(OPERATOR_LABELS).join(', ')
+  const precedenceExample = evaluateExpression([
+    { kind: 'value', value: '2' },
+    { kind: 'operator', value: '+' },
+    { kind: 'value', value: '3' },
+    { kind: 'operator', value: '*' },
+    { kind: 'value', value: '4' },
+  ])
+  const percentageExample = resolvePercentageValue('10', {
+    leftValue: '200',
+    operator: '+',
+  })
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
@@ -39,6 +51,18 @@ function App() {
             {CALCULATOR_ACTION_TYPES.length} typed engine actions are modeled
             for input, editing, and evaluation flow
           </li>
+          <li>
+            Operator precedence example:{' '}
+            <code>
+              {precedenceExample.ok ? precedenceExample.value : 'error'}
+            </code>
+          </li>
+          <li>
+            Additive percentage example:{' '}
+            <code>
+              {percentageExample.ok ? percentageExample.value : 'error'}
+            </code>
+          </li>
         </ul>
       </section>
 
@@ -68,8 +92,8 @@ function App() {
       >
         <h2 id="next-heading">Next implementation milestones</h2>
         <ol className="mt-4 grid list-decimal gap-3 pl-5 text-[var(--muted)] marker:text-[var(--accent)]">
-          <li>Implement arithmetic evaluation with operator precedence</li>
           <li>Build the reducer around these engine actions</li>
+          <li>Connect percent and equals actions to reducer transitions</li>
           <li>Wire the display and keypad into the app shell</li>
         </ol>
       </section>

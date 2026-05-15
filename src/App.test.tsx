@@ -37,4 +37,12 @@ describe('App', () => {
       screen.getByText(/typed engine actions are modeled/)
     ).toBeInTheDocument()
   })
+
+  it('summarizes the evaluation examples', () => {
+    render(<App />)
+
+    expect(screen.getByText('Operator precedence example:')).toBeInTheDocument()
+    expect(screen.getByText('14')).toBeInTheDocument()
+    expect(screen.getByText('20')).toBeInTheDocument()
+  })
 })
