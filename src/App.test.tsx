@@ -23,4 +23,18 @@ describe('App', () => {
       screen.getByText('Playwright configured for end-to-end browser coverage')
     ).toBeInTheDocument()
   })
+
+  it('summarizes the engine state model', () => {
+    render(<App />)
+
+    expect(
+      screen.getByRole('heading', { name: 'Engine model foundation' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('Pending expression starts empty until input is chained')
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/typed engine actions are modeled/)
+    ).toBeInTheDocument()
+  })
 })
