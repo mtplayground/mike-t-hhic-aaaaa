@@ -232,4 +232,35 @@ describe('calculatorReducer', () => {
     ])
     expect(state.nextHistoryId).toBe(2)
   })
+
+  it('recalls a history result into the current entry without clearing the session history', () => {
+    const state = runSequence([
+      { type: 'digit', digit: '8' },
+      { type: 'operator', operator: '/' },
+      { type: 'digit', digit: '2' },
+      { type: 'equals' },
+      { type: 'digit', digit: '9' },
+      { type: 'recall-history', entryId: 1 },
+    ])
+
+    expect(state.currentEntry).toBe('4')
+    expect(state.pendingExpression).toEqual([])
+    expect(state.pendingOperator).toBeNull()
+    expect(state.waitingForOperand).toBe(true)
+    expect(state.error).toBeNull()
+    expect(state.history).toEqual([
+      {
+        id: 1,
+        expression: '8 / 2',
+        result: '4',
+      },
+    ])
+    expect(state.nextHistoryId).toBe(2)
+  })
+
+  it('ignores recall actions for missing history entries', () => {
+    const state = runSequence([{ type: 'recall-history', entryId: 999 }])
+
+    expect(state).toEqual(INITIAL_CALCULATOR_STATE)
+  })
 })

@@ -25,6 +25,7 @@ export const CALCULATOR_ACTION_TYPES = [
   'clear',
   'backspace',
   'equals',
+  'recall-history',
 ] as const
 
 export type CalculatorActionType = (typeof CALCULATOR_ACTION_TYPES)[number]
@@ -85,6 +86,11 @@ export type EqualsAction = {
   type: 'equals'
 }
 
+export type RecallHistoryAction = {
+  type: 'recall-history'
+  entryId: number
+}
+
 export type CalculatorAction =
   | DigitAction
   | OperatorAction
@@ -93,6 +99,7 @@ export type CalculatorAction =
   | ClearAction
   | BackspaceAction
   | EqualsAction
+  | RecallHistoryAction
 
 export const OPERATOR_LABELS: Record<CalculatorOperator, string> = {
   '+': 'add',

@@ -43,3 +43,4 @@ The Vite dev server is configured to bind to `0.0.0.0:8080`.
 - Input controls live in `src/components/Keypad.tsx`, mapping calculator buttons directly to the typed reducer actions for digits, operators, sign toggle, clear, backspace, decimal, and equals.
 - `src/App.tsx` now assembles the responsive calculator shell, wiring `Display` and `Keypad` directly to the shared reducer state in a mobile-first layout.
 - Keyboard input is normalized through `src/engine/keyboard.ts`, keeping the physical keyboard mapping aligned with the same reducer actions used by the keypad.
+- `src/components/HistoryPanel.tsx` renders the scrollable session history list and recalls a prior result into the display through the reducer when an entry is selected.

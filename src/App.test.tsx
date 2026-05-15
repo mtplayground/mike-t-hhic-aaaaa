@@ -38,6 +38,14 @@ describe('App', () => {
         'Successful evaluations are now recorded in an in-memory session history for later recall.'
       )
     ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Session history' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'Completed calculations will appear here once you evaluate them.'
+      )
+    ).toBeInTheDocument()
     expect(screen.getByLabelText('Pending expression')).toHaveTextContent(
       'No pending expression'
     )
@@ -66,6 +74,35 @@ describe('App', () => {
       screen.getByRole('button', { name: 'Evaluate expression' })
     )
     expect(screen.getByLabelText('Current value')).toHaveTextContent('15')
+    expect(getDefinitionValue('History entries')).toHaveTextContent('1')
+    expect(
+      screen.getByRole('button', { name: 'Recall 12 + 3 equals 15' })
+    ).toBeInTheDocument()
+  })
+
+  it('recalls a recorded result from the history panel', async () => {
+    const user = userEvent.setup()
+
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Digit 8' }))
+    await user.click(screen.getByRole('button', { name: '/ operator' }))
+    await user.click(screen.getByRole('button', { name: 'Digit 2' }))
+    await user.click(
+      screen.getByRole('button', { name: 'Evaluate expression' })
+    )
+    await user.click(screen.getByRole('button', { name: 'Digit 9' }))
+
+    expect(screen.getByLabelText('Current value')).toHaveTextContent('9')
+
+    await user.click(
+      screen.getByRole('button', { name: 'Recall 8 / 2 equals 4' })
+    )
+
+    expect(screen.getByLabelText('Current value')).toHaveTextContent('4')
+    expect(screen.getByLabelText('Pending expression')).toHaveTextContent(
+      'No pending expression'
+    )
     expect(getDefinitionValue('History entries')).toHaveTextContent('1')
   })
 
