@@ -37,3 +37,4 @@ The Vite dev server is configured to bind to `0.0.0.0:8080`.
 - Calculator engine types live in `src/engine/types.ts`.
 - The shared model defines the current entry, pending expression, pending operator, and the typed action union used by later reducer and UI work.
 - Arithmetic evaluation lives in `src/engine/evaluate.ts`, including operator precedence, chained reductions, percentage normalization, and divide-by-zero guards.
+- Reducer transitions live in `src/engine/reducer.ts`, with unit coverage for arithmetic sequences, editing flows, and edge cases.

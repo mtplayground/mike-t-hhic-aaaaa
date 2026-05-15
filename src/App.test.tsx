@@ -28,13 +28,15 @@ describe('App', () => {
     render(<App />)
 
     expect(
-      screen.getByRole('heading', { name: 'Engine model foundation' })
+      screen.getByRole('heading', { name: 'Reducer foundation' })
     ).toBeInTheDocument()
     expect(
-      screen.getByText('Pending expression starts empty until input is chained')
+      screen.getByText(
+        'Pending expression captures chained operands and operators'
+      )
     ).toBeInTheDocument()
     expect(
-      screen.getByText(/typed engine actions are modeled/)
+      screen.getByText(/typed engine actions are modeled and now reduce/)
     ).toBeInTheDocument()
   })
 
@@ -44,5 +46,6 @@ describe('App', () => {
     expect(screen.getByText('Operator precedence example:')).toBeInTheDocument()
     expect(screen.getByText('14')).toBeInTheDocument()
     expect(screen.getByText('20')).toBeInTheDocument()
+    expect(screen.getByText('15')).toBeInTheDocument()
   })
 })
