@@ -31,3 +31,8 @@ The Vite dev server is configured to bind to `0.0.0.0:8080`.
 - Vitest runs component tests in `jsdom` with React Testing Library and shared setup from `src/test/setup.ts`.
 - Playwright specs live in `e2e/` and target the Vite app on `http://127.0.0.1:8080`.
 - Copy `.env.example` to `.env` to override build-time client configuration such as `VITE_APP_TITLE`.
+
+## Engine model
+
+- Calculator engine types live in `src/engine/types.ts`.
+- The shared model defines the current entry, pending expression, pending operator, and the typed action union used by later reducer and UI work.
