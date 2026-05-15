@@ -1,0 +1,85 @@
+:root {
+  --text: #3d3a46;
+  --text-h: #17141f;
+  --bg: #f4efe8;
+  --surface: rgba(255, 255, 255, 0.9);
+  --border: rgba(62, 52, 69, 0.12);
+  --code-bg: rgba(54, 38, 69, 0.08);
+  --accent: #a44b21;
+  --shadow:
+    rgba(66, 43, 20, 0.08) 0 18px 40px -20px,
+    rgba(66, 43, 20, 0.12) 0 10px 18px -18px;
+
+  --sans: Inter, 'Segoe UI', sans-serif;
+  --heading: 'Avenir Next', 'Segoe UI', sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
+
+#root {
+  max-width: 100%;
+  min-height: 100svh;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at top left, rgba(237, 165, 120, 0.28), transparent 30%),
+    linear-gradient(180deg, #fbf7f1 0%, #f2eadf 100%);
+}
+
+h1,
+h2 {
+  font-family: var(--heading);
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+h1 {
+  font-size: clamp(2.6rem, 6vw, 4.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+  margin: 0 0 16px;
+  @media (max-width: 1024px) {
+    margin-bottom: 12px;
+  }
+}
+h2 {
+  font-size: 24px;
+  line-height: 118%;
+  letter-spacing: -0.24px;
+  margin: 0 0 8px;
+  @media (max-width: 1024px) {
+    font-size: 20px;
+  }
+}
+p {
+  margin: 0;
+}
+
+code,
+li::marker {
+  font-family: var(--mono);
+}
+
+code {
+  font-size: 15px;
+  line-height: 135%;
+  padding: 4px 8px;
+  background: var(--code-bg);
+  border-radius: 999px;
+  color: var(--text-h);
+}
