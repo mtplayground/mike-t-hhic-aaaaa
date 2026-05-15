@@ -7,6 +7,7 @@ Vite + React + TypeScript scaffold for the calculator project, with Tailwind CSS
 - `npm install`
 - `npm run dev`
 - `npm run build`
+- `npm run serve:dist`
 - `npm run lint`
 - `npm run lint:fix`
 - `npm run format`
@@ -20,6 +21,12 @@ Vite + React + TypeScript scaffold for the calculator project, with Tailwind CSS
 
 The Vite dev server is configured to bind to `0.0.0.0:8080`.
 
+## Production build
+
+- `npm run build` writes the deployable static bundle to `dist/`.
+- `npm run serve:dist` previews the built output on `0.0.0.0:8080`.
+- Static deployment guidance lives in [DEPLOYMENT.md](./DEPLOYMENT.md).
+
 ## Styling and formatting
 
 - Tailwind CSS is enabled through the Vite plugin and imported from `src/index.css`.
@@ -31,6 +38,7 @@ The Vite dev server is configured to bind to `0.0.0.0:8080`.
 - Vitest runs component tests in `jsdom` with React Testing Library and shared setup from `src/test/setup.ts`.
 - Playwright specs live in `e2e/` and target the Vite app on `http://127.0.0.1:8080`.
 - Copy `.env.example` to `.env` to override build-time client configuration such as `VITE_APP_TITLE`.
+- Set `VITE_APP_TITLE` before `npm run build` when production should use a different title than local development.
 
 ## Engine model
 
