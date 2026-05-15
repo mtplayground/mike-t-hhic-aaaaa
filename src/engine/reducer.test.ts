@@ -38,6 +38,13 @@ describe('calculatorReducer', () => {
     expect(state.pendingOperator).toBeNull()
     expect(state.waitingForOperand).toBe(true)
     expect(state.error).toBeNull()
+    expect(state.history).toEqual([
+      {
+        id: 1,
+        expression: '2 + 3 * 4',
+        result: '14',
+      },
+    ])
   })
 
   it('replaces a trailing operator before the next operand is entered', () => {
@@ -83,6 +90,7 @@ describe('calculatorReducer', () => {
     expect(state.error).toBe('Cannot divide by zero.')
     expect(state.pendingOperator).toBe('/')
     expect(state.currentEntry).toBe('0')
+    expect(state.history).toEqual([])
   })
 
   it('starts a new entry when a digit is typed after equals', () => {
@@ -103,10 +111,21 @@ describe('calculatorReducer', () => {
       { type: 'digit', digit: '7' },
       { type: 'operator', operator: '+' },
       { type: 'digit', digit: '5' },
+      { type: 'equals' },
       { type: 'clear' },
     ])
 
-    expect(state).toEqual(INITIAL_CALCULATOR_STATE)
+    expect(state).toEqual({
+      ...INITIAL_CALCULATOR_STATE,
+      history: [
+        {
+          id: 1,
+          expression: '7 + 5',
+          result: '12',
+        },
+      ],
+      nextHistoryId: 2,
+    })
   })
 
   it('keeps single-value equals presses stable', () => {
@@ -143,6 +162,13 @@ describe('calculatorReducer', () => {
     expect(reducerState.currentEntry).toBe(
       evaluation.ok ? evaluation.value : ''
     )
+    expect(reducerState.history).toEqual([
+      {
+        id: 1,
+        expression: '24 / 3 + 10',
+        result: '18',
+      },
+    ])
   })
 
   it('can reduce one action at a time from the initial state', () => {
@@ -153,5 +179,57 @@ describe('calculatorReducer', () => {
 
     expect(state.currentEntry).toBe('4')
     expect(state.waitingForOperand).toBe(false)
+  })
+
+  it('increments history across successful calculations in the same session', () => {
+    const state = runSequence([
+      { type: 'digit', digit: '2' },
+      { type: 'operator', operator: '+' },
+      { type: 'digit', digit: '3' },
+      { type: 'equals' },
+      { type: 'digit', digit: '9' },
+      { type: 'operator', operator: '-' },
+      { type: 'digit', digit: '4' },
+      { type: 'equals' },
+    ])
+
+    expect(state.history).toEqual([
+      {
+        id: 1,
+        expression: '2 + 3',
+        result: '5',
+      },
+      {
+        id: 2,
+        expression: '9 - 4',
+        result: '5',
+      },
+    ])
+    expect(state.nextHistoryId).toBe(3)
+  })
+
+  it('preserves history when recovering from an error with new input', () => {
+    const state = runSequence([
+      { type: 'digit', digit: '2' },
+      { type: 'operator', operator: '+' },
+      { type: 'digit', digit: '3' },
+      { type: 'equals' },
+      { type: 'digit', digit: '8' },
+      { type: 'operator', operator: '/' },
+      { type: 'digit', digit: '0' },
+      { type: 'equals' },
+      { type: 'digit', digit: '4' },
+    ])
+
+    expect(state.currentEntry).toBe('4')
+    expect(state.error).toBeNull()
+    expect(state.history).toEqual([
+      {
+        id: 1,
+        expression: '2 + 3',
+        result: '5',
+      },
+    ])
+    expect(state.nextHistoryId).toBe(2)
   })
 })
