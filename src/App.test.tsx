@@ -24,6 +24,11 @@ describe('App', () => {
     expect(
       screen.getByRole('heading', { name: 'App shell notes' })
     ).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'Keyboard input mirrors the on-screen controls for digits, operators, Enter, Escape, Backspace, and decimal entry.'
+      )
+    ).toBeInTheDocument()
     expect(screen.getByLabelText('Pending expression')).toHaveTextContent(
       'No pending expression'
     )
@@ -45,5 +50,29 @@ describe('App', () => {
     )
     expect(screen.getByLabelText('Current value')).toHaveTextContent('3')
     expect(screen.getByText('Editing current operand')).toBeInTheDocument()
+  })
+
+  it('updates the display when keyboard actions are pressed', async () => {
+    const user = userEvent.setup()
+
+    render(<App />)
+
+    await user.keyboard('12+3')
+
+    expect(screen.getByLabelText('Pending expression')).toHaveTextContent(
+      '12 +'
+    )
+    expect(screen.getByLabelText('Current value')).toHaveTextContent('3')
+
+    await user.keyboard('{Enter}')
+    expect(screen.getByLabelText('Current value')).toHaveTextContent('15')
+
+    await user.keyboard('9')
+    await user.keyboard('{Backspace}')
+    expect(screen.getByLabelText('Current value')).toHaveTextContent('0')
+
+    await user.keyboard('9')
+    await user.keyboard('{Escape}')
+    expect(screen.getByLabelText('Current value')).toHaveTextContent('0')
   })
 })
