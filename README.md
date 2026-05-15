@@ -39,3 +39,4 @@ The Vite dev server is configured to bind to `0.0.0.0:8080`.
 - Arithmetic evaluation lives in `src/engine/evaluate.ts`, including operator precedence, chained reductions, percentage normalization, and divide-by-zero guards.
 - Reducer transitions live in `src/engine/reducer.ts`, with unit coverage for arithmetic sequences, editing flows, and edge cases.
 - The first calculator UI primitive lives in `src/components/Display.tsx`, rendering the current entry and in-progress expression with accessible labels and overflow-safe layout.
+- Input controls live in `src/components/Keypad.tsx`, mapping calculator buttons directly to the typed reducer actions for digits, operators, sign toggle, clear, backspace, decimal, and equals.

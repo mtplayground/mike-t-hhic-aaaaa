@@ -1,8 +1,9 @@
 import { useReducer } from 'react'
 
 import Display from './components/Display'
+import Keypad from './components/Keypad'
 import { evaluateExpression, resolvePercentageValue } from './engine/evaluate'
-import { calculatorReducer, reduceCalculatorActions } from './engine/reducer'
+import { calculatorReducer } from './engine/reducer'
 import {
   CALCULATOR_ACTION_TYPES,
   INITIAL_CALCULATOR_STATE,
@@ -12,7 +13,10 @@ import {
 function App() {
   const appTitle = import.meta.env.VITE_APP_TITLE ?? 'Mike T HHIC AAAAA'
   const operatorNames = Object.values(OPERATOR_LABELS).join(', ')
-  const [engineState] = useReducer(calculatorReducer, INITIAL_CALCULATOR_STATE)
+  const [engineState, dispatch] = useReducer(
+    calculatorReducer,
+    INITIAL_CALCULATOR_STATE
+  )
   const precedenceExample = evaluateExpression([
     { kind: 'value', value: '2' },
     { kind: 'operator', value: '+' },
@@ -24,34 +28,29 @@ function App() {
     leftValue: '200',
     operator: '+',
   })
-  const reducerPreview = reduceCalculatorActions([
-    { type: 'digit', digit: '1' },
-    { type: 'digit', digit: '2' },
-    { type: 'operator', operator: '+' },
-    { type: 'digit', digit: '3' },
-  ])
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
       <section className="rounded-[2rem] border border-[color:var(--border)] bg-[var(--surface)] p-8 shadow-[var(--shadow)] backdrop-blur">
         <p className="mb-3 font-mono text-sm font-bold tracking-[0.22em] text-[var(--accent)] uppercase">
-          Issue 7 of 15
+          Issue 8 of 15
         </p>
         <h1>{appTitle}</h1>
         <p className="max-w-3xl text-base/7 text-[var(--muted)] sm:text-lg/8">
           This repository now runs on Vite, React, TypeScript, Tailwind, and a
-          ready-to-use test harness. This step adds the first dedicated
-          calculator UI primitive: an accessible display for the current entry
-          and in-progress expression.
+          ready-to-use test harness. This step adds the keypad that dispatches
+          calculator actions through the existing reducer model.
         </p>
       </section>
 
       <Display
-        currentEntry={reducerPreview.currentEntry}
-        pendingExpression={reducerPreview.pendingExpression}
-        pendingOperator={reducerPreview.pendingOperator}
-        error={reducerPreview.error}
+        currentEntry={engineState.currentEntry}
+        pendingExpression={engineState.pendingExpression}
+        pendingOperator={engineState.pendingOperator}
+        error={engineState.error}
       />
+
+      <Keypad dispatch={dispatch} />
 
       <section
         className="rounded-[2rem] border border-[color:var(--border)] bg-[var(--surface)] p-8 shadow-[var(--shadow)] backdrop-blur"
@@ -68,6 +67,7 @@ function App() {
             {CALCULATOR_ACTION_TYPES.length} typed engine actions are modeled
             and now reduce into concrete state transitions
           </li>
+          <li>Keypad buttons now dispatch those actions directly</li>
           <li>
             Operator precedence example:{' '}
             <code>
@@ -110,9 +110,9 @@ function App() {
         <h2 id="next-heading">Next implementation milestones</h2>
         <ol className="mt-4 grid list-decimal gap-3 pl-5 text-[var(--muted)] marker:text-[var(--accent)]">
           <li>Connect percent and equals actions to reducer transitions</li>
-          <li>Wire the display and keypad into the app shell</li>
+          <li>Refine the app shell into a calculator-first layout</li>
           <li>
-            Expose reducer state through interactive calculator components
+            Expose reducer state through interactive history-aware components
           </li>
         </ol>
       </section>
