@@ -26,6 +26,9 @@ describe('Display', () => {
     expect(
       screen.getByText('Calculator display', { selector: '#display-heading' })
     ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Calculator display' })
+    ).toBeInTheDocument()
     expect(screen.getByLabelText('Pending expression')).toHaveTextContent(
       '12 +'
     )
@@ -40,14 +43,34 @@ describe('Display', () => {
     )
   })
 
-  it('renders errors through the current value region', () => {
+  it('renders errors through the current value region with recovery guidance', () => {
     renderDisplay({
       currentEntry: '0',
       error: 'Cannot divide by zero.',
     })
 
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Cannot divide by zero.'
+    )
     expect(screen.getByLabelText('Current value')).toHaveTextContent(
-      'Error: Cannot divide by zero.'
+      'Cannot divide by zero.'
+    )
+    expect(
+      screen.getByText(
+        'Cannot divide by zero. Press a digit or decimal to start over, or clear the calculator.'
+      )
+    ).toBeInTheDocument()
+  })
+
+  it('renders overflow guidance for long values', () => {
+    renderDisplay({
+      currentEntry: '12345678901234567',
+    })
+
+    expect(
+      screen.getByText(
+        'Long value detected. Scroll horizontally to review all digits.'
+      )
     )
   })
 

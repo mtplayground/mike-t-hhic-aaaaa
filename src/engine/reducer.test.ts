@@ -79,6 +79,32 @@ describe('calculatorReducer', () => {
     expect(state.currentEntry).toBe('0')
   })
 
+  it('preserves session history when backspace clears an error state', () => {
+    const state = runSequence([
+      { type: 'digit', digit: '8' },
+      { type: 'operator', operator: '/' },
+      { type: 'digit', digit: '2' },
+      { type: 'equals' },
+      { type: 'digit', digit: '8' },
+      { type: 'operator', operator: '/' },
+      { type: 'digit', digit: '0' },
+      { type: 'equals' },
+      { type: 'backspace' },
+    ])
+
+    expect(state).toEqual({
+      ...INITIAL_CALCULATOR_STATE,
+      history: [
+        {
+          id: 1,
+          expression: '8 / 2',
+          result: '4',
+        },
+      ],
+      nextHistoryId: 2,
+    })
+  })
+
   it('guards divide-by-zero errors without throwing', () => {
     const state = runSequence([
       { type: 'digit', digit: '8' },

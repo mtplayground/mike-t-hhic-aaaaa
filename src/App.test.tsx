@@ -39,7 +39,18 @@ describe('App', () => {
       )
     ).toBeInTheDocument()
     expect(
+      screen.getByText(
+        'Error states are announced more explicitly, and long values now expose a visible overflow hint instead of silently truncating the context.'
+      )
+    ).toBeInTheDocument()
+    expect(
       screen.getByRole('heading', { name: 'Session history' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Calculator display' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Calculator keypad' })
     ).toBeInTheDocument()
     expect(
       screen.getByText(
@@ -61,7 +72,7 @@ describe('App', () => {
 
     await user.click(screen.getByRole('button', { name: 'Digit 1' }))
     await user.click(screen.getByRole('button', { name: 'Digit 2' }))
-    await user.click(screen.getByRole('button', { name: '+ operator' }))
+    await user.click(screen.getByRole('button', { name: 'add operator' }))
     await user.click(screen.getByRole('button', { name: 'Digit 3' }))
 
     expect(screen.getByLabelText('Pending expression')).toHaveTextContent(
@@ -86,7 +97,7 @@ describe('App', () => {
     render(<App />)
 
     await user.click(screen.getByRole('button', { name: 'Digit 8' }))
-    await user.click(screen.getByRole('button', { name: '/ operator' }))
+    await user.click(screen.getByRole('button', { name: 'divide operator' }))
     await user.click(screen.getByRole('button', { name: 'Digit 2' }))
     await user.click(
       screen.getByRole('button', { name: 'Evaluate expression' })
@@ -128,5 +139,62 @@ describe('App', () => {
     await user.keyboard('9')
     await user.keyboard('{Escape}')
     expect(screen.getByLabelText('Current value')).toHaveTextContent('0')
+  })
+
+  it('keeps the keypad buttons in a predictable tab order', async () => {
+    const user = userEvent.setup()
+
+    render(<App />)
+
+    await user.tab()
+    expect(
+      screen.getByRole('button', { name: 'Clear calculator' })
+    ).toHaveFocus()
+
+    await user.tab()
+    expect(screen.getByRole('button', { name: 'Toggle sign' })).toHaveFocus()
+
+    await user.tab()
+    expect(screen.getByRole('button', { name: 'Backspace' })).toHaveFocus()
+
+    await user.tab()
+    expect(
+      screen.getByRole('button', { name: 'divide operator' })
+    ).toHaveFocus()
+  })
+
+  it('announces divide-by-zero errors and preserves history after backspace recovery', async () => {
+    const user = userEvent.setup()
+
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Digit 8' }))
+    await user.click(screen.getByRole('button', { name: 'divide operator' }))
+    await user.click(screen.getByRole('button', { name: 'Digit 2' }))
+    await user.click(
+      screen.getByRole('button', { name: 'Evaluate expression' })
+    )
+    await user.click(screen.getByRole('button', { name: 'Digit 8' }))
+    await user.click(screen.getByRole('button', { name: 'divide operator' }))
+    await user.click(screen.getByRole('button', { name: 'Digit 0' }))
+    await user.click(
+      screen.getByRole('button', { name: 'Evaluate expression' })
+    )
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Cannot divide by zero.'
+    )
+    expect(
+      screen.getByText(
+        'Cannot divide by zero. Press a digit or decimal to start over, or clear the calculator.'
+      )
+    ).toBeInTheDocument()
+    expect(getDefinitionValue('History entries')).toHaveTextContent('1')
+
+    await user.click(screen.getByRole('button', { name: 'Backspace' }))
+
+    expect(screen.getByLabelText('Current value')).toHaveTextContent('0')
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(getDefinitionValue('History entries')).toHaveTextContent('1')
   })
 })

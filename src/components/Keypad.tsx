@@ -1,6 +1,7 @@
 import { type Dispatch } from 'react'
 
 import {
+  OPERATOR_LABELS,
   type CalculatorAction,
   type CalculatorOperator,
   type DigitCharacter,
@@ -62,7 +63,7 @@ const KEY_LAYOUT: KeyConfig[] = [
   },
   ...OPERATOR_KEYS.map((key) => ({
     label: key.label,
-    ariaLabel: `${key.operator} operator`,
+    ariaLabel: `${OPERATOR_LABELS[key.operator]} operator`,
     tone: 'accent' as const,
     action: { type: 'operator' as const, operator: key.operator },
   })),
@@ -103,12 +104,12 @@ export function Keypad({ dispatch }: KeypadProps) {
       aria-labelledby="keypad-heading"
     >
       <div className="mb-4">
-        <p
+        <h2
           id="keypad-heading"
           className="font-mono text-sm font-bold tracking-[0.22em] text-[var(--accent)] uppercase"
         >
           Calculator keypad
-        </p>
+        </h2>
         <p className="mt-2 text-sm text-[var(--muted)]">
           Action buttons wired to the calculator reducer
         </p>

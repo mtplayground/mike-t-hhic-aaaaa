@@ -13,6 +13,9 @@ describe('Keypad', () => {
     expect(
       screen.getByText('Calculator keypad', { selector: '#keypad-heading' })
     ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Calculator keypad' })
+    ).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Digit 7' })).toBeInTheDocument()
     expect(
       screen.getByRole('button', { name: 'Evaluate expression' })
@@ -26,7 +29,7 @@ describe('Keypad', () => {
     render(<Keypad dispatch={dispatch} />)
 
     await user.click(screen.getByRole('button', { name: 'Digit 7' }))
-    await user.click(screen.getByRole('button', { name: '+ operator' }))
+    await user.click(screen.getByRole('button', { name: 'add operator' }))
     await user.click(screen.getByRole('button', { name: 'Decimal point' }))
     await user.click(screen.getByRole('button', { name: 'Toggle sign' }))
     await user.click(screen.getByRole('button', { name: 'Backspace' }))
@@ -55,5 +58,24 @@ describe('Keypad', () => {
     expect(screen.getByRole('button', { name: 'Digit 0' })).toHaveClass(
       'col-span-2'
     )
+  })
+
+  it('uses descriptive labels for operator buttons', () => {
+    const dispatch = vi.fn()
+
+    render(<Keypad dispatch={dispatch} />)
+
+    expect(
+      screen.getByRole('button', { name: 'divide operator' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'multiply operator' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'subtract operator' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'add operator' })
+    ).toBeInTheDocument()
   })
 })
