@@ -1,5 +1,6 @@
 import { useReducer } from 'react'
 
+import Display from './components/Display'
 import { evaluateExpression, resolvePercentageValue } from './engine/evaluate'
 import { calculatorReducer, reduceCalculatorActions } from './engine/reducer'
 import {
@@ -28,35 +29,40 @@ function App() {
     { type: 'digit', digit: '2' },
     { type: 'operator', operator: '+' },
     { type: 'digit', digit: '3' },
-    { type: 'equals' },
   ])
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
       <section className="rounded-[2rem] border border-[color:var(--border)] bg-[var(--surface)] p-8 shadow-[var(--shadow)] backdrop-blur">
         <p className="mb-3 font-mono text-sm font-bold tracking-[0.22em] text-[var(--accent)] uppercase">
-          Issue 6 of 15
+          Issue 7 of 15
         </p>
         <h1>{appTitle}</h1>
         <p className="max-w-3xl text-base/7 text-[var(--muted)] sm:text-lg/8">
           This repository now runs on Vite, React, TypeScript, Tailwind, and a
-          ready-to-use test harness. This step adds the reducer that applies
-          calculator engine actions across arithmetic, editing, and error
-          handling flows.
+          ready-to-use test harness. This step adds the first dedicated
+          calculator UI primitive: an accessible display for the current entry
+          and in-progress expression.
         </p>
       </section>
 
+      <Display
+        currentEntry={reducerPreview.currentEntry}
+        pendingExpression={reducerPreview.pendingExpression}
+        pendingOperator={reducerPreview.pendingOperator}
+        error={reducerPreview.error}
+      />
+
       <section
         className="rounded-[2rem] border border-[color:var(--border)] bg-[var(--surface)] p-8 shadow-[var(--shadow)] backdrop-blur"
-        aria-labelledby="reducer-heading"
+        aria-labelledby="engine-heading"
       >
-        <h2 id="reducer-heading">Reducer foundation</h2>
+        <h2 id="engine-heading">Engine preview</h2>
         <ul className="mt-4 grid gap-3 pl-5 text-[var(--muted)] marker:text-[var(--accent)]">
           <li>
             Initial reducer entry stays at{' '}
             <code>{engineState.currentEntry}</code>
           </li>
-          <li>Pending expression captures chained operands and operators</li>
           <li>Pending operator starts unset and supports {operatorNames}</li>
           <li>
             {CALCULATOR_ACTION_TYPES.length} typed engine actions are modeled
@@ -73,9 +79,6 @@ function App() {
             <code>
               {percentageExample.ok ? percentageExample.value : 'error'}
             </code>
-          </li>
-          <li>
-            Reducer sequence preview: <code>{reducerPreview.currentEntry}</code>
           </li>
         </ul>
       </section>
@@ -108,7 +111,9 @@ function App() {
         <ol className="mt-4 grid list-decimal gap-3 pl-5 text-[var(--muted)] marker:text-[var(--accent)]">
           <li>Connect percent and equals actions to reducer transitions</li>
           <li>Wire the display and keypad into the app shell</li>
-          <li>Expose reducer state through dedicated calculator components</li>
+          <li>
+            Expose reducer state through interactive calculator components
+          </li>
         </ol>
       </section>
     </main>

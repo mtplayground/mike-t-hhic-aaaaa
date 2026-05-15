@@ -28,16 +28,12 @@ describe('App', () => {
     render(<App />)
 
     expect(
-      screen.getByRole('heading', { name: 'Reducer foundation' })
+      screen.getByText('Calculator display', { selector: '#display-heading' })
     ).toBeInTheDocument()
-    expect(
-      screen.getByText(
-        'Pending expression captures chained operands and operators'
-      )
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText(/typed engine actions are modeled and now reduce/)
-    ).toBeInTheDocument()
+    expect(screen.getByLabelText('Pending expression')).toHaveTextContent(
+      '12 +'
+    )
+    expect(screen.getByLabelText('Current value')).toHaveTextContent('3')
   })
 
   it('summarizes the evaluation examples', () => {
@@ -46,6 +42,6 @@ describe('App', () => {
     expect(screen.getByText('Operator precedence example:')).toBeInTheDocument()
     expect(screen.getByText('14')).toBeInTheDocument()
     expect(screen.getByText('20')).toBeInTheDocument()
-    expect(screen.getByText('15')).toBeInTheDocument()
+    expect(screen.getByText('Engine preview')).toBeInTheDocument()
   })
 })
