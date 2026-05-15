@@ -30,10 +30,13 @@ describe('App', () => {
     expect(
       screen.getByText('Calculator display', { selector: '#display-heading' })
     ).toBeInTheDocument()
+    expect(
+      screen.getByText('Calculator keypad', { selector: '#keypad-heading' })
+    ).toBeInTheDocument()
     expect(screen.getByLabelText('Pending expression')).toHaveTextContent(
-      '12 +'
+      'No pending expression'
     )
-    expect(screen.getByLabelText('Current value')).toHaveTextContent('3')
+    expect(screen.getByLabelText('Current value')).toHaveTextContent('0')
   })
 
   it('summarizes the evaluation examples', () => {
