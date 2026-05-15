@@ -251,6 +251,23 @@ function handleEquals(state: CalculatorState): CalculatorState {
   }
 }
 
+function handleRecallHistory(
+  state: CalculatorState,
+  entryId: number
+): CalculatorState {
+  const historyEntry = state.history.find((entry) => entry.id === entryId)
+
+  if (!historyEntry) {
+    return state
+  }
+
+  return {
+    ...resetCalculatorSessionState(state),
+    currentEntry: historyEntry.result,
+    waitingForOperand: true,
+  }
+}
+
 export function calculatorReducer(
   state: CalculatorState,
   action: CalculatorAction
@@ -270,6 +287,8 @@ export function calculatorReducer(
       return handleBackspace(state)
     case 'equals':
       return handleEquals(state)
+    case 'recall-history':
+      return handleRecallHistory(state, action.entryId)
   }
 }
 

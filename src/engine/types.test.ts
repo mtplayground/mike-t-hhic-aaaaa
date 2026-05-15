@@ -29,6 +29,7 @@ describe('calculator engine types', () => {
       { type: 'clear' },
       { type: 'backspace' },
       { type: 'equals' },
+      { type: 'recall-history', entryId: 1 },
     ]
 
     expect(actions.map((action) => action.type)).toEqual(

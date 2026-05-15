@@ -1,6 +1,7 @@
 import { useEffect, useEffectEvent, useReducer } from 'react'
 
 import Display from './components/Display'
+import HistoryPanel from './components/HistoryPanel'
 import Keypad from './components/Keypad'
 import { getActionForKeyboardEvent } from './engine/keyboard'
 import { calculatorReducer } from './engine/reducer'
@@ -37,13 +38,13 @@ function App() {
         <section className="rounded-[2.25rem] border border-[color:var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
           <div className="mb-5 border-b border-[color:var(--border)] pb-5">
             <p className="mb-3 font-mono text-sm font-bold tracking-[0.22em] text-[var(--accent)] uppercase">
-              Issue 9 of 15
+              Issue 12 of 15
             </p>
             <h1 className="max-w-2xl">{appTitle}</h1>
             <p className="max-w-2xl text-base/7 text-[var(--muted)] sm:text-lg/8">
-              A responsive calculator shell assembled around the live engine
-              reducer. The display and keypad now form the primary mobile-first
-              interface.
+              The live calculator shell now includes a session history panel, so
+              completed expressions can be reviewed and recalled into the
+              display without leaving the main layout.
             </p>
           </div>
 
@@ -81,6 +82,10 @@ function App() {
               history for later recall.
             </li>
           </ul>
+
+          <div className="mt-6">
+            <HistoryPanel history={engineState.history} dispatch={dispatch} />
+          </div>
 
           <div className="mt-6 rounded-[1.5rem] border border-[color:var(--border)] bg-[color:var(--display-bg)] p-5">
             <p className="font-mono text-xs font-bold tracking-[0.2em] text-[var(--accent)] uppercase">
