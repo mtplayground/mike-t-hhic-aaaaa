@@ -1,0 +1,45 @@
+Architecture plan for mtplayground/mike-t-hhic-aaaaa
+
+Goal
+Build a calculator SPA with React + TypeScript on Vite, styled with Tailwind, using a reducer-driven engine that supports keypad input, keyboard input, history recall, unit tests, and Playwright coverage.
+
+Module structure
+- `src/main.tsx`: app bootstrap.
+- `src/App.tsx`: shell composition and reducer wiring.
+- `src/styles/` or `src/index.css`: Tailwind layers and app theme tokens.
+- `src/components/Display.tsx`: current entry, expression preview, status/error messaging.
+- `src/components/Keypad.tsx`: button grid and action dispatch.
+- `src/components/HistoryPanel.tsx`: session history list and recall interaction.
+- `src/engine/types.ts`: shared engine state, history entry, operator, and action union types.
+- `src/engine/evaluate.ts`: pure arithmetic parsing/evaluation with precedence and percentage rules.
+- `src/engine/reducer.ts`: reducer, initial state, and small helpers for input transitions.
+- `src/engine/keyboard.ts`: key-to-action mapping so keyboard and keypad share one action surface.
+- `src/test/` plus colocated `*.test.ts(x)`: engine and component tests with Vitest/RTL.
+- `e2e/`: Playwright end-to-end flows.
+
+Shared types
+- `Operator`: `'+' | '-' | '*' | '/'`.
+- `CalculatorAction`: discriminated union for digit, decimal, operator, equals, clear, backspace, sign toggle, percent, and history recall.
+- `CalculatorState`: `displayValue`, `tokens` or `expression`, `pendingOperator`, `lastResult`, `history`, `error`, and flags needed for replacing entry after operator/equals.
+- `HistoryEntry`: expression string, result string, timestamp/id.
+
+Key design decisions
+- Keep arithmetic evaluation pure and UI-agnostic so reducer and tests can exercise it directly.
+- Represent user-visible numbers as strings in state to preserve entry semantics; convert to numbers only inside evaluation helpers.
+- Use a discriminated action union shared by keypad and keyboard input to prevent divergent behavior.
+- Keep history in reducer state from the start shape, even if the UI lands later, to avoid state migrations when Issue 11 arrives.
+- Treat divide-by-zero and invalid states as explicit engine error states rendered by `Display`, not thrown exceptions.
+- Prefer flat component boundaries: `App` owns reducer/state, presentational components receive data and dispatch callbacks.
+
+Issue dependency plan
+1. Foundation: Issues 1-3 establish Vite/TS, Tailwind/lint/formatting, and test/env tooling.
+2. Engine core: Issue 4 defines types; Issue 5 adds pure evaluation; Issue 6 builds the reducer and unit tests.
+3. UI assembly: Issues 7-8 create `Display` and `Keypad`; Issue 9 composes them in `App`.
+4. Interaction extensions: Issue 10 adds keyboard mapping on top of shared actions; Issue 11 extends reducer state with history; Issue 12 renders recall UI.
+5. Verification/release: Issue 13 covers end-to-end flows; Issue 14 performs accessibility and error review; Issue 15 finalizes production build and deployment notes.
+
+Cross-issue constraints
+- Issue 3 should install Playwright early, but most e2e specs should wait until Issues 9-12 are complete.
+- Issue 4 must define percent and history-related actions up front so later issues do not require breaking action refactors.
+- Issue 7 and Issue 14 should align on aria labels, live regions, and focus order to avoid rework.
+- Issue 15 should document static hosting for Vite `dist/` output rather than introducing server-side deployment complexity.
