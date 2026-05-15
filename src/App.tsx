@@ -1,7 +1,8 @@
-import { useReducer } from 'react'
+import { useEffect, useEffectEvent, useReducer } from 'react'
 
 import Display from './components/Display'
 import Keypad from './components/Keypad'
+import { getActionForKeyboardEvent } from './engine/keyboard'
 import { calculatorReducer } from './engine/reducer'
 import { INITIAL_CALCULATOR_STATE } from './engine/types'
 
@@ -11,6 +12,24 @@ function App() {
     calculatorReducer,
     INITIAL_CALCULATOR_STATE
   )
+  const handleKeyDown = useEffectEvent((event: KeyboardEvent) => {
+    const action = getActionForKeyboardEvent(event)
+
+    if (!action) {
+      return
+    }
+
+    event.preventDefault()
+    dispatch(action)
+  })
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-6 sm:py-10 lg:justify-center">
@@ -52,6 +71,10 @@ function App() {
             <li>
               Display and keypad share the same reducer state, so button presses
               update the visible output immediately.
+            </li>
+            <li>
+              Keyboard input mirrors the on-screen controls for digits,
+              operators, Enter, Escape, Backspace, and decimal entry.
             </li>
           </ul>
 
